@@ -329,55 +329,85 @@
     | CONTACT FORM
     |=================
     */
-        
       $("#contactForm").validator().on("submit", function (event) {
-          if (event.isDefaultPrevented()) {
+        if (event.isDefaultPrevented()) {
             // handle the invalid form...
             formError();
-            submitMSG(false, "Did you fill in the form properly?");
-          } else {
+            submitMSG(false, "Please complete the form accurately");
+        } else {
             // everything looks good!
             event.preventDefault();
             submitForm();
-          }
-       });
+        }
+    });
     
-        function submitForm(){
-          var name = $("#name").val();
-          var email = $("#email").val();
-          var message = $("#message").val();
-          $.ajax({
-              type: "POST",
-              url: "process.php",
-              data: "name=" + name + "&email=" + email + "&message=" + message,
-              success : function(text){
-                  if (text == "success"){
-                      formSuccess();
-                    } else {
-                      formError();
-                      submitMSG(false,text);
-                    }
+    function submitForm(){
+        var name = $("#name").val();
+        var email = $("#email").val();
+        var message = $("#message").val();
+        
+        // Your access key obtained from Web3Forms
+        var accessKey = "76780c0e-f5f8-4dc6-8f24-f425350c8cf1";
+    
+        $.ajax({
+            type: "POST",
+            url: "https://api.web3forms.com/submit",
+            data: {
+                access_key: accessKey,
+                name: name,
+                email: email,
+                message: message
+            },
+            success: function(response){
+                if (response.success){
+                    formSuccess();
+                } else {
+                    formError();
+                    submitMSG(false, response.message);
                 }
-            });
-        }
-        function formSuccess(){
-            $("#contactForm")[0].reset();
-            submitMSG(true, "Message Sent!")
-        }
-    	  function formError(){   
-    	    $("#contactForm").removeClass().addClass('shake animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-    	        $(this).removeClass();
-    	    });
-    	  }
-        function submitMSG(valid, msg){
-          if(valid){
-            var msgClasses = "h3 text-center fadeInUp animated text-success";
-          } else {
-            var msgClasses = "h3 text-center shake animated text-danger";
-          }
-          $("#msgSubmit").removeClass().addClass(msgClasses).text(msg);
-        }
+            },
+            error: function(xhr, status, error){
+                formError();
+                submitMSG(false, "An error occurred while submitting the form.");
+            }
+        });
+    }
     
+    function formSuccess(){
+        $("#contactForm")[0].reset();
+        submitMSG(true, "Message Sent!");
+    }
+    
+    function formError(){   
+        $("#contactForm").removeClass().addClass('shake animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            $(this).removeClass();
+        });
+    }
+    
+    function submitMSG(valid, msg){
+        if(valid){
+            var msgClasses = "h3 text-center fadeInUp animated text-success";
+        } else {
+            var msgClasses = "h3 text-center shake animated text-danger";
+        }
+        $("#msgSubmit").removeClass().addClass(msgClasses).text(msg);
+    }
+    
+// Get the submit button
+var submitButton = document.getElementById("form-submit");
+
+// Get the popup
+var popup = document.getElementById("popup");
+
+// When the submit button is clicked, show the popup
+submitButton.addEventListener("click", function() {
+    popup.style.display = "block";
+    // Hide the popup after 5 seconds
+    setTimeout(function() {
+        popup.style.display = "none";
+    }, 5000);
+});
+
 
     
 }(jQuery));

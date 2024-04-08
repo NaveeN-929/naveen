@@ -1622,6 +1622,34 @@ body {
   width: 100%;
   padding: 20px;
   outline: 0; }
+
+  .popup {
+    display: none; /* Hide popup by default */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(114, 114, 114, 0.5); /* Smokey ash colour transparent background */
+    z-index: 9999;
+}
+
+.popup-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
+.thank-you {
+    font-size: 35px; /* Bigger font size for Thank you message */
+    color: white; /* White font color */
+}
+
   .mh-footer .contact-message:focus {
     -webkit-box-shadow: 0 0px 2px 0 rgba(255, 255, 255, 0.8), 0 0px 1px 1px rgba(255, 255, 255, 0.8);
     -moz-box-shadow: 0 0px 2px 0 rgba(255, 255, 255, 0.8), 0 0px 1px 1px rgba(255, 255, 255, 0.8);
