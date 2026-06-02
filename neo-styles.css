@@ -3423,15 +3423,30 @@ body[data-theme="dark"] .language-item:hover {
   padding-bottom: 1rem;
 }
 
+.creator-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
 .creator-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
+  background: var(--white);
+  border: 3px solid var(--border);
+  box-shadow: 4px 4px 0 var(--border);
 }
 
 .creator-label {
   font-family: 'Caveat', cursive;
   font-size: 1.8rem;
   color: var(--text);
+  text-align: center;
   margin-bottom: 1rem;
   opacity: 0.8;
 }
@@ -3492,7 +3507,26 @@ body[data-theme="dark"] .language-item:hover {
   box-shadow: 2px 2px 0 var(--border);
 }
 
+.creator-showcase-soon {
+  opacity: 0.7;
+  border-style: dashed;
+}
+
+.creator-github-soon {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.creator-github-soon:hover {
+  transform: none;
+  box-shadow: 4px 4px 0 var(--border);
+}
+
 /* Dark mode for projects */
+body[data-theme="dark"] .creator-showcase {
+  background: #3a3a3a;
+}
+
 body[data-theme="dark"] .creator-project {
   background: #3a3a3a;
 }
