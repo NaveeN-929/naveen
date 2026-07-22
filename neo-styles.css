@@ -3430,6 +3430,19 @@ body[data-theme="dark"] .language-item:hover {
   align-items: stretch;
 }
 
+.creator-grid-top {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.creator-grid-soon {
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 1.5rem;
+}
+
+.creator-grid-soon .creator-name {
+  font-size: 2rem;
+}
+
 .creator-showcase {
   display: flex;
   flex-direction: column;
@@ -3543,6 +3556,11 @@ body[data-theme="dark"] .nav-lazyfire {
 
   .creator-showcase {
     padding: 0.5rem;
+  }
+
+  .creator-grid-top,
+  .creator-grid-soon {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   .creator-label {
