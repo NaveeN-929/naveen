@@ -4,6 +4,7 @@ import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import '../styles/global.css';
 import { profile } from '../data/profile';
+import { withBase } from '../lib/paths';
 import Header from '../components/Header.astro';
 import ThemeCord from '../components/ThemeCord.astro';
 import BackToTop from '../components/BackToTop.astro';
@@ -28,7 +29,7 @@ const { title = `${profile.name} — ${profile.headline}`, description = profile
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
       (function () {

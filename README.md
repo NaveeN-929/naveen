@@ -12,8 +12,9 @@ This repo has been through **three designs on three different stacks**. Only one
 |---|---|
 | **Design** | Design 3 — *Wall of Doors* (warm plaster & brass) |
 | **Stack** | Astro 7.4 · TypeScript (strict) · scoped CSS · vanilla JS (no UI framework) |
-| **Branch** | `astro-stack-new-desgin` |
-| **Status** | In progress, not merged to `main` yet |
+| **Branch** | `main` (merged from `astro-stack-new-desgin` in PR #5) |
+| **Status** | On `main`, deployed by Cloudflare Pages |
+| **Live** | https://naveencenrayan.pages.dev/ |
 | **Since** | October 2026 |
 
 ## Design history
@@ -22,7 +23,7 @@ This repo has been through **three designs on three different stacks**. Only one
 |---|--------|-------|--------|----------|
 | 1 | Classic vCard | Static HTML · Bootstrap 4 · jQuery + plugins | 2022-09-23 → 2025-03-19 | [`7403e66`](https://github.com/NaveeN-929/naveen/tree/7403e66a20ec095f4398fef3ee26768cd4f60586) on `main` |
 | 2 | Neo-Brutalist | Vanilla HTML / CSS / JS, no build step | 2026-03-02 → 2026-07-28 | [`a3de16b`](https://github.com/NaveeN-929/naveen/tree/a3de16b157ff7ada1adffb77f9f06461887c758f) on `main` |
-| 3 | **Wall of Doors** (current) | Astro 7 · TypeScript | 2026-10 → present | branch `astro-stack-new-desgin` |
+| 3 | **Wall of Doors** (current) | Astro 7 · TypeScript | 2026-10 → present | `main` |
 
 The snapshot commit is the **last commit of that design**. Check it out to get the design back exactly as it was.
 
@@ -38,7 +39,7 @@ The snapshot commit is the **last commit of that design**. Check it out to get t
 - **Look:** neo-brutalism: thick black borders, flat offset shadows, a yellow / cyan / pink / green palette, torn-paper section dividers, scroll-drawn highlights, a falling terminal icon, a matrix-typing greeting and a Leaflet journey map.
 - **Stack:** vanilla HTML, CSS and JS with no build step; Leaflet 1.9.4; Font Awesome 6.4; Google Fonts (Space Grotesk, Space Mono, Caveat); JSON-LD and Open Graph meta for SEO.
 - **Key files:** `index.html` (markup and inline JS), `neo-styles.css`, `image/`, `favicon.ico`, `robots.txt`. `neo-script.js`, `script.js` and `styles.css` (a terminal-style resume) are in the snapshot but not loaded by `index.html`.
-- **Canonical URL** in its meta tags: https://naveencenrayan.pages.dev/
+- **Hosted** on Cloudflare Pages at https://naveencenrayan.pages.dev/ (and on GitHub Pages at https://naveen-929.github.io/naveen/), deployed straight from `main` with no build step.
 - Adapted from the open-source neo-brutalist portfolio at marjoballabani.me.
 
 ### Design 3 — Wall of Doors (current)
@@ -58,6 +59,15 @@ npm run build     # static site into dist/
 npm run preview   # serve the built dist/
 ```
 
+### Deploying
+
+**Cloudflare Pages** builds the repo on every push: build command `npm run build`, output directory `dist`.
+
+- Node is pinned in [`.node-version`](.node-version). Without it Cloudflare falls back to Node 18, and Astro 7 refuses to build on anything below 22.23.4. If you bump Node, update this file and `engines` in `package.json` together.
+- Internal links go through `withBase()` from [`src/lib/paths.ts`](src/lib/paths.ts), e.g. `href={withBase('/#story')}`. At `/` it changes nothing, but it keeps the site working if it is ever built with a `--base` sub-path.
+
+GitHub Pages is no longer used for Design 3 (its workflow was removed). Turn it off in **Settings → Pages**; otherwise GitHub keeps running a Jekyll build over the raw `.astro` files on every push, and that build fails.
+
 ```
 .
 ├── public/                 # favicon.ico, favicon.svg (served as-is)
@@ -66,6 +76,7 @@ npm run preview   # serve the built dist/
 │   ├── components/         # Header, Hero, Doors, Story, Loader, ThemeCord, ...
 │   ├── data/profile.ts     # all site content
 │   ├── layouts/Base.astro  # <head>, fonts, theme bootstrap
+│   ├── lib/paths.ts        # withBase(): prefixes links with the deploy base
 │   ├── pages/
 │   │   ├── index.astro     # home
 │   │   └── work/[slug].astro  # one case-study page per door

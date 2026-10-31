@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ContactFooter from '../../components/ContactFooter.astro';
 import { doors, profile, type Door } from '../../data/profile';
+import { withBase } from '../../lib/paths';
 
 export function getStaticPaths() {
   return doors.map((door, i) => ({
@@ -21,7 +22,7 @@ const { door, next } = Astro.props;
 <Base title={`${door.title} — ${profile.name}`} description={door.intro}>
   <section class="wk" style={`--door:${door.color}`}>
     <div class="shell">
-      <a class="wk__back" href="/#work">
+      <a class="wk__back" href={withBase('/#work')}>
         <span aria-hidden="true">←</span> Back to the doors
       </a>
       <p class="mono wk__kicker" data-reveal>{door.kicker}</p>
@@ -79,7 +80,7 @@ const { door, next } = Astro.props;
         }
       </div>
 
-      <a class="wk__next" href={`/work/${next.slug}/`} style={`--door:${next.color}`}>
+      <a class="wk__next" href={withBase(`/work/${next.slug}/`)} style={`--door:${next.color}`}>
         <span class="mono">Next door</span>
         <span class="wk__next-title">{next.title} <span aria-hidden="true">→</span></span>
       </a>
