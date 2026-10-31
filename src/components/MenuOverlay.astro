@@ -1,0 +1,210 @@
+---
+import { profile, doors } from '../data/profile';
+
+const items = [
+  { href: '/', label: 'Home' },
+  ...doors.map((d) => ({ href: `/work/${d.slug}/`, label: d.title })),
+  { href: '/#story', label: 'My journey' },
+  { href: '/#contact', label: 'Contact' },
+];
+---
+
+<dialog class="navm" id="menu" aria-label="Menu" data-menu>
+  <div class="shell navm__inner">
+    <div class="navm__top">
+      <span class="navm__brand"><span aria-hidden="true">✦</span> {profile.firstName}</span>
+      <button class="navm__close" type="button" data-menu-close>
+        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+        </svg>
+        Close
+      </button>
+    </div>
+
+    <nav aria-label="Primary">
+      <ol class="navm__list">
+        {
+          items.map((item, i) => (
+            <li style={`--i:${i}`}>
+              <a href={item.href} data-menu-link>
+                <span class="navm__num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="navm__label">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <div class="navm__foot">
+      <a href={`mailto:${profile.email}`}>{profile.email}</a>
+      <span>
+        <a href={profile.github} rel="noopener" target="_blank">GitHub</a> ·
+        <a href={profile.linkedin} rel="noopener" target="_blank">LinkedIn</a> ·
+        <a href={profile.cv} rel="noopener" target="_blank">CV</a>
+      </span>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .navm {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--night);
+    color: var(--night-ink);
+    overflow-y: auto;
+  }
+  .navm::backdrop {
+    background: transparent;
+  }
+  .navm[open] {
+    animation: navm-in 0.6s var(--ease) both;
+  }
+  :global(.navm.is-closing) {
+    animation: navm-out 0.45s var(--ease) both;
+  }
+  @keyframes navm-in {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  @keyframes navm-out {
+    from {
+      clip-path: inset(0 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 100% 0);
+    }
+  }
+  .navm__inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-block: 18px 28px;
+  }
+  .navm__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 40px;
+  }
+  .navm__brand {
+    font-weight: 600;
+  }
+  .navm__brand span {
+    color: var(--brass);
+  }
+  .navm__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: transparent;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .navm__list {
+    list-style: none;
+    margin: auto 0;
+    padding: 4vh 0;
+  }
+  .navm__list li {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .navm[open] .navm__list li {
+    animation: item-in 0.7s var(--ease) both;
+    animation-delay: calc(0.15s + var(--i) * 0.05s);
+  }
+  @keyframes item-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .navm__list a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-block: 2px;
+    text-decoration: none;
+  }
+  .navm__num {
+    font-size: 12px;
+    color: rgba(236, 231, 225, 0.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .navm__label {
+    font-size: clamp(34px, 6.4vw, 68px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    color: rgba(236, 231, 225, 0.72);
+    transition: color 0.3s, transform 0.4s var(--ease);
+  }
+  .navm__list a:hover .navm__label,
+  .navm__list a:focus-visible .navm__label {
+    color: #fff;
+    transform: translateX(10px);
+  }
+  .navm__foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    color: rgba(236, 231, 225, 0.6);
+  }
+  .navm__foot a {
+    text-decoration: none;
+  }
+  .navm__foot a:hover {
+    color: #fff;
+  }
+</style>
+
+<script>
+  const menu = document.querySelector<HTMLDialogElement>('[data-menu]');
+
+  const close = () => {
+    if (!menu?.open) return;
+    menu.classList.add('is-closing');
+    menu.addEventListener(
+      'animationend',
+      () => {
+        menu.classList.remove('is-closing');
+        menu.close();
+      },
+      { once: true },
+    );
+  };
+
+  document.querySelectorAll('[data-menu-open]').forEach((b) => b.addEventListener('click', () => menu?.showModal()));
+  menu?.querySelector('[data-menu-close]')?.addEventListener('click', close);
+  menu?.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    close();
+  });
+  menu?.querySelectorAll<HTMLAnchorElement>('[data-menu-link]').forEach((a) =>
+    a.addEventListener('click', () => {
+      // Same-page anchors: close so the scroll target is visible.
+      if (new URL(a.href).pathname === location.pathname) close();
+    }),
+  );
+</script>

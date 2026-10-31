@@ -1,0 +1,177 @@
+---
+import { profile, doors } from '../data/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="sf" id="contact">
+  <div class="shell">
+    <p class="sf__status" data-reveal><i aria-hidden="true"></i>Available for new work</p>
+    <h2 class="sf__title" data-reveal style="--d:0.06s">
+      Got a project?
+      <span>Let's build it together.</span>
+    </h2>
+    <p class="sf__lede" data-reveal style="--d:0.12s">
+      I take on DevOps, MLOps and AI-infrastructure work: pipelines, clusters, agentic systems and the cloud bill that
+      comes with them. Tell me what you're running and where it hurts.
+    </p>
+    <div class="sf__cta" data-reveal style="--d:0.18s">
+      <a class="btn btn--solid sf__primary" href={`mailto:${profile.email}`}>
+        Email me
+        <span class="btn__icon" aria-hidden="true">→</span>
+      </a>
+      <a class="btn sf__ghost" href={profile.cv} target="_blank" rel="noopener">Download CV</a>
+    </div>
+
+    <div class="sf__cols">
+      <div>
+        <p class="mono sf__h">Work</p>
+        <ul>{doors.map((d) => <li><a href={`/work/${d.slug}/`}>{d.title}</a></li>)}</ul>
+      </div>
+      <div>
+        <p class="mono sf__h">Navigate</p>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/#story">My journey</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="mono sf__h">Elsewhere</p>
+        <ul>
+          <li><a href={profile.github} target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href={profile.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href={`mailto:${profile.email}`}>Email</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="mono sf__h">Status</p>
+        <ul class="sf__plain">
+          <li>Open to work</li>
+          <li>{profile.city} · {profile.workMode}</li>
+          <li>Local time <span data-local-time>--:--</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sf__base">
+      <span>© {year} {profile.name}. Built with Astro.</span>
+      <a href="#main" data-totop-link>Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .sf {
+    position: relative;
+    margin-top: -32px;
+    padding-block: clamp(72px, 12vh, 120px) 28px;
+    border-radius: 32px 32px 0 0;
+    background: var(--night);
+    color: var(--night-ink);
+  }
+  .sf__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(236, 231, 225, 0.7);
+  }
+  .sf__status i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 10px rgba(95, 179, 107, 0.8);
+  }
+  .sf__title {
+    display: flex;
+    flex-direction: column;
+    margin-top: 18px;
+    font-size: clamp(42px, 7vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+  .sf__title span {
+    color: rgba(236, 231, 225, 0.4);
+  }
+  .sf__lede {
+    max-width: 52ch;
+    margin-top: 24px;
+    color: rgba(236, 231, 225, 0.72);
+    font-size: 17px;
+  }
+  .sf__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .sf__primary {
+    background: var(--night-ink);
+    color: #161514;
+    border-color: var(--night-ink);
+  }
+  .sf__primary :global(.btn__icon) {
+    background: #161514;
+    color: var(--night-ink);
+  }
+  .sf__ghost {
+    border-color: rgba(236, 231, 225, 0.2);
+  }
+  .sf__cols {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+    margin-top: clamp(56px, 10vh, 96px);
+    padding-top: 32px;
+    border-top: 1px solid rgba(236, 231, 225, 0.1);
+  }
+  .sf__h {
+    color: rgba(236, 231, 225, 0.45);
+    margin-bottom: 14px;
+  }
+  .sf__cols ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 15px;
+  }
+  .sf__cols a {
+    text-decoration: none;
+    color: rgba(236, 231, 225, 0.85);
+    transition: color 0.2s;
+  }
+  .sf__cols a:hover {
+    color: #fff;
+  }
+  .sf__plain {
+    color: rgba(236, 231, 225, 0.85);
+  }
+  .sf__base {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 48px;
+    padding-right: 64px;
+    font-size: 13px;
+    color: rgba(236, 231, 225, 0.5);
+  }
+  .sf__base a {
+    text-decoration: none;
+  }
+  .sf__base a:hover {
+    color: #fff;
+  }
+  @media (max-width: 760px) {
+    .sf__cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

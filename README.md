@@ -1,103 +1,100 @@
-# marjoballabani.me
+# Naveen Kumar — Portfolio
 
-A neo-brutalist personal portfolio built with vanilla HTML, CSS, and JavaScript. No frameworks, no build tools, no dependencies - just raw code with bold design choices.
+Personal portfolio of Naveen Kumar, DevOps · MLOps · AI Infra Engineer, Bangalore.
 
-This is a personal fun project, not a production template. The code prioritizes creativity and experimentation over best practices. It's a playground for trying out ideas, animations, and interactions - not a reference architecture.
+This repo has been through **three designs on three different stacks**. Only one is live in the working tree at a time, but every design is kept in git history so none of them is lost. This README records which one is current and where to find the others.
 
-**[Live Site](https://marjoballabani.me)**
+> **Last updated:** 2026-11-01
 
-## What is Neo-Brutalism?
+## Current design
 
-Neo-brutalism (also called neo-brutalist web design) is a UI style inspired by brutalist architecture - raw, bold, and unapologetically loud. It rejects the polished, rounded, drop-shadowed sameness of modern web design and replaces it with:
+| | |
+|---|---|
+| **Design** | Design 3 — *Wall of Doors* (warm plaster & brass) |
+| **Stack** | Astro 7.4 · TypeScript (strict) · scoped CSS · vanilla JS (no UI framework) |
+| **Branch** | `astro-stack-new-desgin` |
+| **Status** | In progress, not merged to `main` yet |
+| **Since** | October 2026 |
 
-- **Thick black borders** - every element has a hard, visible edge
-- **Flat, offset box shadows** - no soft gradients or blurs, just solid color blocks shifted by a few pixels (`box-shadow: 8px 8px 0 #000`)
-- **High-contrast color palettes** - bright yellows, pinks, cyans, and greens on white/dark backgrounds
-- **Visible structure** - the "bones" of the layout are intentionally exposed, not hidden behind smooth transitions
-- **Playful imperfection** - torn paper edges, tape stickers, hand-drawn vibes mixed with geometric precision
+## Design history
 
-This site leans into a **hand-crafted, scrapbook-like** take on neo-brutalism: paper tear dividers, a falling SVG terminal icon, highlight markers that animate on scroll, and a treasure map hidden behind a book-flip animation.
+| # | Design | Stack | Active | Snapshot |
+|---|--------|-------|--------|----------|
+| 1 | Classic vCard | Static HTML · Bootstrap 4 · jQuery + plugins | 2022-09-23 → 2025-03-19 | [`7403e66`](https://github.com/NaveeN-929/naveen/tree/7403e66a20ec095f4398fef3ee26768cd4f60586) on `main` |
+| 2 | Neo-Brutalist | Vanilla HTML / CSS / JS, no build step | 2026-03-02 → 2026-07-28 | [`a3de16b`](https://github.com/NaveeN-929/naveen/tree/a3de16b157ff7ada1adffb77f9f06461887c758f) on `main` |
+| 3 | **Wall of Doors** (current) | Astro 7 · TypeScript | 2026-10 → present | branch `astro-stack-new-desgin` |
 
-## Design Decisions
+The snapshot commit is the **last commit of that design**. Check it out to get the design back exactly as it was.
 
-### Color System
+### Design 1 — Classic vCard
 
-The palette uses CSS custom properties for light/dark theming:
+- **Look:** a resume/vCard template with a loader, animated sections, a project gallery, a Google Maps block and a style switcher with 8 colour themes (default, blue, blue-munsell, green, orange, purple, slate, yellow).
+- **Stack:** static HTML, Bootstrap 4, jQuery with Owl Carousel, Isotope/Packery, MixItUp, Fancybox, WOW.js + Animate.css, circle-progress and nicescroll; Font Awesome 4.7; Roboto; Google Maps JS API; contact form via the Web3Forms API.
+- **Key files:** `index.html`, `home-one.html`, `assets/`, `css/`, `js/`, `demo/`.
+- **Also archived as** `old profile.zip` inside the Design 2 snapshot.
 
-| Color | Variable | Usage |
-|-------|----------|-------|
-| Yellow | `--yellow` | Primary accent, CTAs, loader |
-| Cyan | `--cyan` | Code elements, highlights |
-| Pink | `--pink` | Secondary accent, highlights |
-| Green | `--green` | Success states, highlights |
-| Black | `--border` | Borders, shadows, text |
+### Design 2 — Neo-Brutalist
 
-### Typography
+- **Look:** neo-brutalism: thick black borders, flat offset shadows, a yellow / cyan / pink / green palette, torn-paper section dividers, scroll-drawn highlights, a falling terminal icon, a matrix-typing greeting and a Leaflet journey map.
+- **Stack:** vanilla HTML, CSS and JS with no build step; Leaflet 1.9.4; Font Awesome 6.4; Google Fonts (Space Grotesk, Space Mono, Caveat); JSON-LD and Open Graph meta for SEO.
+- **Key files:** `index.html` (markup and inline JS), `neo-styles.css`, `image/`, `favicon.ico`, `robots.txt`. `neo-script.js`, `script.js` and `styles.css` (a terminal-style resume) are in the snapshot but not loaded by `index.html`.
+- **Canonical URL** in its meta tags: https://naveencenrayan.pages.dev/
+- Adapted from the open-source neo-brutalist portfolio at marjoballabani.me.
 
-- **Space Grotesk** - headings and body text (geometric sans-serif that fits the brutalist aesthetic)
-- **Space Mono** - code snippets and terminal elements
-- **Caveat** - handwritten annotations (the "human touch" element)
+### Design 3 — Wall of Doors (current)
 
-### Key Design Elements
+- **Look:** a warm plaster-and-paper palette with brass accents, in light and dark themes (follows the OS, toggled with a pull cord, remembered in `localStorage`). It opens with a boot loader (once per session). The hero has a desk flip-calendar that cycles through roles and a portrait that fills with colour along the pointer's trail. Below that sit an ability card and a wall of four doors (Cloud & DevOps, AI Infra & Agents, Platform & Reliability, Products I Build), each leading to its own case-study page. The story timeline runs over a canvas "clock tunnel". All motion respects `prefers-reduced-motion`.
+- **Stack:** Astro 7.4.4 (static output), TypeScript strict, Astro components with scoped CSS and inline vanilla scripts, fonts self-hosted through Fontsource (Onest Variable, JetBrains Mono).
+- **Content:** every piece of copy, link, door and timeline entry lives in [`src/data/profile.ts`](src/data/profile.ts). Components only render it.
 
-**Paper Tear Effect** - Sections are separated by SVG-drawn torn paper edges that close on scroll with a parallax effect, finished by a tape sticker that "seals" the tear back together.
+## Working on the current design
 
-**Book Flip Timeline** - The journey section starts as a closed treasure map that flips open like a book page to reveal the career timeline underneath.
+Requires Node `>=22.23.4`.
 
-**Scroll-Driven Highlights** - Text highlights animate in from left/right as you scroll, mimicking a highlighter pen being drawn across the page.
-
-**Interactive Map** - Leaflet.js with Stamen watercolor tiles, styled with a grid overlay and pirate illustration. Clicking timeline entries flies to the corresponding map marker.
-
-**Matrix Typing Effect** - The hero greeting scrambles through random characters before resolving to the final text.
-
-**Falling Decorative Icons** - SVG icons around the hero photo drop with gravity when you start scrolling.
-
-## Terminal Mode
-
-Visit [/terminal.html](https://marjoballabani.me/terminal.html) for an interactive terminal-style resume.
-
-Features:
-- Type `help` to see available commands
-- Multiple color themes (Default, Dracula, Solarized, Nord)
-- Split terminal panes (horizontal/vertical)
-- Built-in Snake game (via p5.js)
-- Command history with arrow keys
-
-## Project Structure
+```bash
+npm install
+npm run dev       # dev server at http://localhost:4321
+npm run build     # static site into dist/
+npm run preview   # serve the built dist/
+```
 
 ```
 .
-├── index.html          # Main portfolio (neo-brutalist)
-├── neo-styles.css      # Styles for index.html
-├── terminal.html       # Terminal-style resume
-├── styles.css          # Styles for terminal.html
-├── script.js           # Terminal logic & commands
-├── favicon.svg         # Site favicon
-├── image/              # Assets (avatar, icons, pirate)
-├── CNAME               # Custom domain config
-├── robots.txt          # Search engine directives
-├── sitemap.xml         # Sitemap for SEO
-└── LICENSE             # MIT License
+├── public/                 # favicon.ico, favicon.svg (served as-is)
+├── src/
+│   ├── assets/             # portrait images
+│   ├── components/         # Header, Hero, Doors, Story, Loader, ThemeCord, ...
+│   ├── data/profile.ts     # all site content
+│   ├── layouts/Base.astro  # <head>, fonts, theme bootstrap
+│   ├── pages/
+│   │   ├── index.astro     # home
+│   │   └── work/[slug].astro  # one case-study page per door
+│   └── styles/global.css   # design tokens (colours, fonts) and base styles
+├── astro.config.mjs
+└── package.json
 ```
 
-## Tech Stack
+## Bringing back an old design
 
-- **HTML/CSS/JS** - no frameworks, no build step
-- **Leaflet.js** - interactive journey map
-- **p5.js** - Snake game in terminal mode
-- **Font Awesome** - icons
-- **Google Fonts** - Space Grotesk, Space Mono, Caveat, Fira Code
-
-## Run Locally
+Designs 1 and 2 are plain static sites, so any static server can run them.
 
 ```bash
-# Any static server works
-npx serve .
+# Open an old design in a separate folder without touching your branch
+git worktree add ../naveen-design-2 a3de16b   # use 7403e66 for Design 1
+npx serve ../naveen-design-2
 
-# or
-python3 -m http.server 8000
+# Remove it when done
+git worktree remove ../naveen-design-2
+
+# Or copy a single file out of an old design
+git show a3de16b:neo-styles.css > neo-styles.old.css
 ```
 
-## License
+## Keeping the designs safe
 
-This project is **proprietary**. All rights reserved. You may browse the source code for inspiration, but copying, modifying, or redistributing any part of it without written permission is not allowed. See the [LICENSE](LICENSE) file for details.
+When a design or stack changes:
+
+1. Commit (and push) the final state of the outgoing design before you remove its files.
+2. Add or update its row in **Design history** with its date range and last commit hash.
+3. Update **Current design** and the **Last updated** date at the top.
+4. Never squash, rebase or force-push over a snapshot commit listed above.

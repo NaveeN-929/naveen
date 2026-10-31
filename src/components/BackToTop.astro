@@ -1,0 +1,65 @@
+<a class="totop" href="#main" aria-label="Back to top" data-totop>
+  <svg class="totop__ring" viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="24" cy="24" r="22" pathLength="100"></circle>
+  </svg>
+  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M7 12V2M2.5 6.5L7 2l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</a>
+
+<style>
+  .totop {
+    position: fixed;
+    right: max(16px, calc(var(--gutter) / 2));
+    bottom: 20px;
+    z-index: 35;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    box-shadow: 0 12px 28px -12px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  }
+  :global(.totop.is-visible) {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .totop__ring {
+    position: absolute;
+    inset: 0;
+    rotate: -90deg;
+  }
+  .totop__ring circle {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-dasharray: 100;
+    stroke-dashoffset: calc(100 - var(--p, 0) * 100);
+    opacity: 0.7;
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLAnchorElement>('[data-totop]');
+  const update = () => {
+    if (!btn) return;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? scrollY / max : 0;
+    btn.style.setProperty('--p', p.toFixed(3));
+    btn.classList.toggle('is-visible', scrollY > innerHeight * 0.8);
+  };
+  update();
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  btn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+</script>

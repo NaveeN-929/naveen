@@ -1,0 +1,142 @@
+---
+import { profile } from '../data/profile';
+---
+
+<div class="boot" data-boot aria-hidden="true">
+  <div class="boot__glow"></div>
+  <div class="boot__top">
+    <span><b>{profile.name}</b> · Portfolio</span>
+    <span class="boot__tag">{profile.headline}</span>
+  </div>
+  <div class="boot__bottom">
+    <div>
+      <p class="mono boot__label" data-boot-label>Pulling images</p>
+      <p class="boot__count" data-boot-count>000</p>
+    </div>
+    <span class="boot__bar"><span data-boot-bar></span></span>
+  </div>
+</div>
+
+<style>
+  .boot {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 32px var(--gutter);
+    background: #0e0d0c;
+    color: #ece7e1;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  :global(.js:not(.booted)) .boot {
+    display: flex;
+  }
+  :global(.boot.is-done) {
+    clip-path: inset(0 0 100% 0);
+  }
+  .boot__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 50% at 0% 70%, rgba(150, 80, 40, 0.28), transparent 70%),
+      radial-gradient(35% 45% at 100% 60%, rgba(90, 80, 70, 0.25), transparent 70%),
+      radial-gradient(40% 30% at 45% 0%, rgba(120, 110, 100, 0.18), transparent 70%);
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    to {
+      transform: scale(1.12) translateX(2%);
+    }
+  }
+  .boot__top {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 13px;
+    color: rgba(236, 231, 225, 0.6);
+  }
+  .boot__top b {
+    color: #ece7e1;
+    font-weight: 600;
+  }
+  .boot__bottom {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .boot__label {
+    color: rgba(236, 231, 225, 0.55);
+    margin-bottom: 6px;
+  }
+  .boot__count {
+    font-size: clamp(64px, 11vw, 140px);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+  }
+  .boot__bar {
+    position: relative;
+    width: min(28vw, 260px);
+    height: 1px;
+    margin-bottom: 14px;
+    background: rgba(236, 231, 225, 0.18);
+  }
+  .boot__bar span {
+    position: absolute;
+    inset: 0;
+    background: #ece7e1;
+    transform-origin: left;
+    transform: scaleX(var(--p, 0));
+  }
+  @media (max-width: 560px) {
+    .boot__tag {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const boot = document.querySelector<HTMLElement>('[data-boot]');
+  const ready = () => root.classList.add('is-ready');
+
+  if (!boot || root.classList.contains('booted')) {
+    boot?.remove();
+    ready();
+  } else {
+    const count = boot.querySelector<HTMLElement>('[data-boot-count]')!;
+    const label = boot.querySelector<HTMLElement>('[data-boot-label]')!;
+    const bar = boot.querySelector<HTMLElement>('[data-boot-bar]')!;
+    const stages = ['Pulling images', 'Applying manifests', 'Running health checks', 'All systems green'];
+    const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 300 : 1900;
+    const start = performance.now();
+    const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const frame = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const p = ease(t);
+      count.textContent = String(Math.round(p * 100)).padStart(3, '0');
+      label.textContent = stages[Math.min(stages.length - 1, Math.floor(p * stages.length))];
+      bar.style.setProperty('--p', p.toFixed(3));
+      if (t < 1) return requestAnimationFrame(frame);
+
+      try {
+        sessionStorage.setItem('booted', '1');
+      } catch {}
+      setTimeout(() => {
+        boot.classList.add('is-done');
+        ready();
+        boot.addEventListener('transitionend', () => boot.remove(), { once: true });
+      }, 220);
+    };
+    requestAnimationFrame(frame);
+  }
+</script>
