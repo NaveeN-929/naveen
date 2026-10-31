@@ -64,11 +64,9 @@ npm run preview   # serve the built dist/
 **Cloudflare Pages** builds the repo on every push: build command `npm run build`, output directory `dist`.
 
 - Node is pinned in [`.node-version`](.node-version). Without it Cloudflare falls back to Node 18, and Astro 7 refuses to build on anything below 22.23.4. If you bump Node, update this file and `engines` in `package.json` together.
+- Internal links go through `withBase()` from [`src/lib/paths.ts`](src/lib/paths.ts), e.g. `href={withBase('/#story')}`. At `/` it changes nothing, but it keeps the site working if it is ever built with a `--base` sub-path.
 
-**GitHub Pages** (optional): [`.github/workflows/astro.yml`](.github/workflows/astro.yml) builds with `--base /naveen` and publishes to https://naveen-929.github.io/naveen/.
-
-- In **Settings → Pages**, **Source** must be **GitHub Actions**. With "Deploy from a branch", GitHub runs Jekyll over the raw `.astro` files and the build fails.
-- Because that copy lives under `/naveen/`, internal links go through `withBase()` from [`src/lib/paths.ts`](src/lib/paths.ts), e.g. `href={withBase('/#story')}`. On Cloudflare (served at `/`) it changes nothing; a bare `href="/..."` would only break the GitHub Pages copy.
+GitHub Pages is no longer used for Design 3 (its workflow was removed). Turn it off in **Settings → Pages**; otherwise GitHub keeps running a Jekyll build over the raw `.astro` files on every push, and that build fails.
 
 ```
 .
