@@ -1,0 +1,142 @@
+<button class="cord" type="button" role="switch" aria-checked="false" aria-label="Dark mode (pull the cord)" data-cord>
+  <span class="cord__string" aria-hidden="true"></span>
+  <span class="cord__bead" aria-hidden="true"></span>
+</button>
+
+<style>
+  .cord {
+    position: fixed;
+    top: 0;
+    right: max(10px, calc(var(--gutter) / 2 - 14px));
+    z-index: 45;
+    width: 28px;
+    height: 230px;
+    padding: 0;
+    border: 0;
+    background: none;
+    touch-action: none;
+    transform-origin: 50% 0;
+    animation: sway 6s ease-in-out infinite;
+  }
+  .cord__string {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: calc(186px + var(--pull, 0px));
+    translate: -50% 0;
+    background: repeating-linear-gradient(180deg, #cdbb9a 0 3px, #a8916a 3px 6px);
+    border-radius: 2px;
+    transition: height 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .cord__bead {
+    position: absolute;
+    left: 50%;
+    top: calc(182px + var(--pull, 0px));
+    width: 18px;
+    height: 30px;
+    translate: -50% 0;
+    border-radius: 45% 45% 50% 50% / 30% 30% 70% 70%;
+    background: radial-gradient(circle at 35% 30%, #c98a5a, #7a4424 55%, #4a2611);
+    box-shadow: 0 8px 14px -6px rgba(0, 0, 0, 0.55);
+    transition: top 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  :global(.cord.is-pulling) .cord__string,
+  :global(.cord.is-pulling) .cord__bead {
+    transition-duration: 0.12s;
+  }
+  .cord:hover {
+    animation-play-state: paused;
+  }
+  .cord:focus-visible {
+    outline-offset: -2px;
+  }
+  @keyframes sway {
+    0%,
+    100% {
+      rotate: -1.2deg;
+    }
+    50% {
+      rotate: 1.2deg;
+    }
+  }
+  @media (max-width: 720px) {
+    .cord {
+      height: 150px;
+    }
+    .cord__string {
+      height: calc(108px + var(--pull, 0px));
+    }
+    .cord__bead {
+      top: calc(104px + var(--pull, 0px));
+      width: 14px;
+      height: 24px;
+    }
+  }
+</style>
+
+<script>
+  const cord = document.querySelector<HTMLButtonElement>('[data-cord]');
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : media.matches);
+  const sync = () => cord?.setAttribute('aria-checked', String(isDark()));
+
+  const toggle = () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+    sync();
+  };
+
+  const tug = () => {
+    if (!cord) return;
+    cord.classList.add('is-pulling');
+    cord.style.setProperty('--pull', '26px');
+    setTimeout(() => {
+      cord.classList.remove('is-pulling');
+      cord.style.setProperty('--pull', '0px');
+    }, 140);
+  };
+
+  // Drag the bead down to pull; a plain click or keypress also toggles.
+  let startY: number | null = null;
+  let dragged = false;
+  cord?.addEventListener('pointerdown', (e) => {
+    startY = e.clientY;
+    dragged = false;
+    cord.setPointerCapture(e.pointerId);
+    cord.classList.add('is-pulling');
+  });
+  cord?.addEventListener('pointermove', (e) => {
+    if (startY === null) return;
+    const dy = Math.max(0, Math.min(60, e.clientY - startY));
+    if (dy > 4) dragged = true;
+    cord.style.setProperty('--pull', `${dy}px`);
+  });
+  cord?.addEventListener('pointerup', (e) => {
+    if (startY === null) return;
+    const dy = e.clientY - startY;
+    startY = null;
+    cord.classList.remove('is-pulling');
+    cord.style.setProperty('--pull', '0px');
+    if (dragged && dy > 24) {
+      toggle();
+      cord.dataset.skipClick = '1';
+    }
+  });
+  cord?.addEventListener('click', () => {
+    if (cord.dataset.skipClick) {
+      delete cord.dataset.skipClick;
+      return;
+    }
+    tug();
+    toggle();
+  });
+
+  media.addEventListener('change', sync);
+  sync();
+</script>

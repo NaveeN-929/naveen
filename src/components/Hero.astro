@@ -1,0 +1,639 @@
+---
+import { Image } from 'astro:assets';
+import photo from '../assets/naveen.jpeg';
+import { profile } from '../data/profile';
+
+const { roles } = profile;
+const total = String(roles.length).padStart(2, '0');
+// The script re-counts these to fit the longest role; this is the no-JS default.
+const holes = Array.from({ length: 12 });
+---
+
+<section class="hero" id="top">
+  <div class="shell hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow" data-intro style="--d:0.05s">Based in {profile.location}</p>
+
+      <h1 class="hero__title">
+        <span class="visually-hidden">Hi, I'm {profile.firstName}, {profile.headline}.</span>
+        <span class="hero__line" aria-hidden="true" data-intro style="--d:0.1s">Hi, I'm {profile.firstName}.</span>
+        <span class="hero__line hero__line--muted" aria-hidden="true" data-intro style="--d:0.18s">Call me your</span>
+      </h1>
+
+      <div class="cal-line" aria-hidden="true">
+        <span class="cal" data-intro data-cal data-roles={JSON.stringify(roles)} style="--d:0.28s">
+          <span class="cal__body">
+            <span class="cal__stand"></span>
+            <span class="cal__stack">
+              <span class="cal__back"><span class="cal__holes">{holes.map(() => <i />)}</span></span>
+              <span class="cal__page" data-under>
+                <span class="cal__holes">{holes.map(() => <i />)}</span>
+                <span class="cal__word">{roles[1]}</span>
+                <span class="cal__no">02 / {total}</span>
+                <span class="cal__shade"></span>
+              </span>
+              <span class="cal__leaf" data-leaf>
+                <span class="cal__face" data-face>
+                  <span class="cal__holes">{holes.map(() => <i />)}</span>
+                  <span class="cal__word">{roles[0]}</span>
+                  <span class="cal__no">01 / {total}</span>
+                  <span class="cal__shade"></span>
+                </span>
+                <span class="cal__rear"><span class="cal__holes">{holes.map(() => <i />)}</span></span>
+              </span>
+            </span>
+            <span class="cal__rings">{holes.map(() => <i />)}</span>
+          </span>
+          <span class="cal__measure"></span>
+        </span>
+      </div>
+
+      <div class="hero__cta" data-intro style="--d:0.44s">
+        <a class="btn btn--solid" href="#contact">
+          Let's talk
+          <span class="btn__icon" aria-hidden="true">→</span>
+        </a>
+        <a class="btn" href="#work">See my work</a>
+      </div>
+    </div>
+
+    <div class="hero__art" data-intro style="--d:0.22s">
+      <div class="portrait" data-paint-stage>
+        <Image
+          src={photo}
+          alt={`Portrait of ${profile.name}`}
+          widths={[320, 480, 640, 840]}
+          sizes="(max-width: 900px) 220px, 420px"
+          loading="eager"
+          class="portrait__img"
+        />
+        <canvas class="portrait__paint" data-paint aria-hidden="true"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="hero__bar mono" data-intro style="--d:0.55s">
+      <span><i class="hero__live" aria-hidden="true"></i>Open to work</span>
+      <span class="hero__where">{profile.city} · {profile.workMode}</span>
+      <a href="#work">Scroll to explore ↓</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: clamp(104px, 16vh, 150px);
+    overflow: clip;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 50% at 78% 40%, rgba(255, 255, 255, 0.55), transparent 70%),
+      radial-gradient(30% 40% at 10% 90%, rgba(196, 154, 80, 0.12), transparent 70%);
+  }
+  :global([data-theme='dark']) .hero::before {
+    background: radial-gradient(40% 50% at 78% 40%, rgba(255, 220, 170, 0.07), transparent 70%);
+  }
+  .hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 64px);
+    flex: 1;
+  }
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    font-size: clamp(44px, 6.6vw, 92px);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+  .hero__line--muted {
+    color: color-mix(in srgb, var(--ink) 48%, transparent);
+  }
+
+  /* Desk flip calendar on a black stand, tilted towards the reader. Each role is a page bound
+     by a spiral; the top page flips over the rings and drops behind the stack. Sizes are in em
+     so the script can shrink the whole calendar to fit the column. */
+  .cal-line {
+    display: block;
+    padding-top: 0.34em;
+    margin-top: 0.1em;
+    padding-bottom: 0.42em;
+    font-size: clamp(44px, 6.6vw, 92px);
+    line-height: 0.98;
+  }
+  .cal {
+    --cal-w: 7.6em;
+    position: relative;
+    display: inline-block;
+    font-size: 0.9em;
+    perspective: 14em;
+    perspective-origin: 30% 0;
+    vertical-align: top;
+  }
+  .cal__body {
+    position: relative;
+    display: block;
+    width: var(--cal-w);
+    height: 1.72em;
+    transform: rotateX(10deg) rotateY(-9deg);
+    transform-style: preserve-3d;
+    transition: width 0.5s var(--ease);
+  }
+  .cal__stand {
+    position: absolute;
+    left: 0.2em;
+    right: -0.14em;
+    top: 0.28em;
+    bottom: -0.4em;
+    border-radius: 0.26em;
+    background: linear-gradient(165deg, #3a3a3a 0%, #141414 40%, #050505 100%);
+    box-shadow: 0 0.5em 0.9em -0.35em rgba(0, 0, 0, 0.55), inset 0 0.02em 0 rgba(255, 255, 255, 0.12);
+    transform: translateZ(-0.12em);
+  }
+  .cal__stack {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  .cal__page,
+  .cal__face,
+  .cal__rear {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.2em;
+  }
+  /* The page underneath, with the edges of the pages below it showing as a stack. */
+  .cal__page {
+    background: linear-gradient(180deg, #fbfaf7 0%, #f2f0eb 100%);
+    box-shadow:
+      0 0.045em 0 #d8d4cb,
+      0 0.08em 0 #f6f4ef,
+      0 0.115em 0 #d0cbc1,
+      0 0.15em 0 #f2f0ea,
+      0 0.185em 0 #c8c3b8,
+      0 0.22em 0 #e9e6df,
+      0 0.255em 0 #aaa498,
+      0 0.45em 0.6em -0.2em rgba(0, 0, 0, 0.35);
+  }
+  .cal__leaf {
+    position: absolute;
+    inset: 0;
+    transform-origin: 50% 0;
+    transform-style: preserve-3d;
+    transform: translateZ(0.004em);
+  }
+  .cal__face {
+    background: linear-gradient(180deg, #fdfcf9 0%, #f3f1ec 100%);
+    backface-visibility: hidden;
+    box-shadow: inset 0 -0.015em 0 rgba(0, 0, 0, 0.06);
+  }
+  /* Pages already flipped hang behind the stack, just past the rings. */
+  .cal__back {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.2em;
+    transform-origin: 50% 0;
+    transform: translateZ(-0.004em) rotateX(352deg) translateY(50%) rotateX(180deg) translateY(-50%);
+    backface-visibility: hidden;
+    background: linear-gradient(0deg, #e9e6df 0%, #d9d5cc 100%);
+    filter: brightness(0.86);
+  }
+  .cal__rear {
+    background: linear-gradient(0deg, #e9e6df 0%, #d9d5cc 100%);
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+  }
+  .cal__word {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0.2em 0.4em 0;
+    color: #0a0a0a;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .cal__no {
+    position: absolute;
+    right: 0.42em;
+    bottom: 0.2em;
+    font-size: 0.15em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(10, 10, 10, 0.42);
+    font-variant-numeric: tabular-nums;
+  }
+  .cal__holes {
+    position: absolute;
+    top: 0.09em;
+    left: 0.32em;
+    right: 0.32em;
+    height: 0.07em;
+    display: flex;
+    justify-content: space-between;
+  }
+  .cal__holes :global(i) {
+    display: block;
+    width: 0.075em;
+    height: 0.075em;
+    border-radius: 50%;
+    background: #1b1b1b;
+    box-shadow: inset 0 0.01em 0.01em rgba(255, 255, 255, 0.3);
+  }
+  .cal__shade {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    backface-visibility: hidden;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.08) 70%, rgba(0, 0, 0, 0) 100%);
+  }
+  .cal__rings {
+    position: absolute;
+    top: -0.27em;
+    left: 0.32em;
+    right: 0.32em;
+    height: 0.42em;
+    display: flex;
+    justify-content: space-between;
+    transform: translateZ(0.05em);
+    pointer-events: none;
+  }
+  .cal__rings :global(i) {
+    display: block;
+    position: relative;
+    width: 0.075em;
+    height: 0.42em;
+  }
+  .cal__rings :global(i)::before {
+    content: '';
+    position: absolute;
+    left: -0.065em;
+    right: -0.065em;
+    top: 0;
+    bottom: 0;
+    border-radius: 0.2em;
+    border: 0.04em solid #a9a9a9;
+    border-left-color: #ededed;
+    border-top-color: #f6f6f6;
+    border-right-color: #6f6f6f;
+    border-bottom-color: #8a8a8a;
+    filter: drop-shadow(0.01em 0.025em 0.015em rgba(0, 0, 0, 0.35));
+  }
+  .cal__measure {
+    position: absolute;
+    visibility: hidden;
+    white-space: nowrap;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    pointer-events: none;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .hero__art {
+    justify-self: center;
+    width: min(100%, 420px);
+  }
+  .portrait {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .portrait :global(.portrait__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+  /* Colour layer, painted back in along the pointer's trail by the script below. */
+  .portrait__paint {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  /* No brush when motion is reduced: the whole portrait takes its colour on hover instead. */
+  @media (hover: hover) and (prefers-reduced-motion: reduce) {
+    .portrait:hover :global(.portrait__img) {
+      filter: none;
+    }
+  }
+
+  .hero__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 40px;
+    padding-block: 18px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+  .hero__bar span {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero__bar a {
+    text-decoration: none;
+  }
+  .hero__live {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 0 rgba(95, 179, 107, 0.6);
+    animation: live 2.4s infinite;
+  }
+  @keyframes live {
+    70% {
+      box-shadow: 0 0 0 8px rgba(95, 179, 107, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(95, 179, 107, 0);
+    }
+  }
+
+  /* Intro choreography runs once the boot screen lifts. */
+  :global(.js) [data-intro] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s var(--ease), transform 1s var(--ease);
+    transition-delay: var(--d, 0s);
+  }
+  :global(.js.is-ready) [data-intro] {
+    opacity: 1;
+    transform: none;
+  }
+  /* The calendar tips up into place rather than sliding. */
+  :global(.js) .cal[data-intro] {
+    transform: translateY(0.5em) rotateX(-18deg);
+    transition-duration: 1.1s;
+  }
+  :global(.js.is-ready) .cal[data-intro] {
+    transform: none;
+  }
+
+  @media (max-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+      padding-bottom: 12px;
+    }
+    .hero__art {
+      order: -1;
+      width: min(48vw, 220px);
+    }
+  }
+  @media (max-width: 560px) {
+    .hero__where {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  const cal = document.querySelector<HTMLElement>('[data-cal]');
+  if (cal) {
+    const roles: string[] = JSON.parse(cal.dataset.roles || '[]');
+    const n = roles.length;
+    const HOLD = 1700;
+    const FLIP = 1250;
+    const q = (sel: string, el: Element = cal) => el.querySelector<HTMLElement>(sel)!;
+    const leaf = q('[data-leaf]');
+    const face = q('[data-face]');
+    const under = q('[data-under]');
+    const rear = q('.cal__rear');
+    const rings = q('.cal__rings');
+    const measure = q('.cal__measure');
+    const column = cal.closest<HTMLElement>('.hero__copy')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pad = (k: number) => String(k).padStart(2, '0');
+    let i = 0;
+
+    const paint = (page: HTMLElement, k: number) => {
+      q('.cal__word', page).textContent = roles[k];
+      q('.cal__no', page).textContent = `${pad(k + 1)} / ${pad(n)}`;
+    };
+
+    // Size the pages to the longest role, and shrink the whole calendar if the column is too narrow.
+    const fit = () => {
+      cal.style.fontSize = '';
+      const fs = parseFloat(getComputedStyle(cal).fontSize);
+      let max = 0;
+      for (const r of roles) {
+        measure.textContent = r;
+        max = Math.max(max, measure.getBoundingClientRect().width);
+      }
+      const w = max / fs + 0.86;
+      cal.style.setProperty('--cal-w', `${w.toFixed(3)}em`);
+      const avail = column.getBoundingClientRect().width - fs * 0.25;
+      if (w * fs > avail) cal.style.fontSize = `${((fs * avail) / (w * fs)).toFixed(2)}px`;
+      // One spiral ring and punched hole roughly every 0.7em.
+      const count = Math.max(5, Math.round((w - 0.64) / 0.7) + 1);
+      rings.innerHTML = '<i></i>'.repeat(count);
+      cal.querySelectorAll('.cal__holes').forEach((h) => (h.innerHTML = '<i></i>'.repeat(count)));
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    let resizing = 0;
+    addEventListener('resize', () => {
+      clearTimeout(resizing);
+      resizing = setTimeout(fit, 120);
+    });
+
+    // The top page swings over the rings and drops behind the stack; the page under it is then
+    // repainted as the new top page and the leaf snaps back, unseen, for the next flip.
+    const flip = () => {
+      if (document.hidden) return void setTimeout(flip, 600);
+      const next = (i + 1) % n;
+      if (reduced) {
+        i = next;
+        paint(face, i);
+        paint(under, (i + 1) % n);
+        setTimeout(flip, HOLD + 700);
+        return;
+      }
+      const linear = { duration: FLIP, easing: 'linear', fill: 'forwards' } as const;
+      face.animate([{ opacity: 1 }, { opacity: 1, offset: 0.285 }, { opacity: 0, offset: 0.295 }, { opacity: 0 }], linear);
+      // The back of the page catches the light coming over the top, then falls into shadow behind.
+      rear.animate(
+        [
+          { filter: 'brightness(1)' },
+          { filter: 'brightness(1.02)', offset: 0.29 },
+          { filter: 'brightness(.96)', offset: 0.45 },
+          { filter: 'brightness(.9)' },
+        ],
+        linear,
+      );
+      q('.cal__shade', face).animate([{ opacity: 0 }, { opacity: 0.45, offset: 0.2 }, { opacity: 0, offset: 0.275 }, { opacity: 0 }], linear);
+      q('.cal__shade', under).animate([{ opacity: 0.7 }, { opacity: 0 }], {
+        duration: FLIP * 0.9,
+        easing: 'cubic-bezier(.3,.6,.4,1)',
+        fill: 'forwards',
+      });
+      leaf.animate([{ transform: 'translateZ(.004em) rotateX(0deg)' }, { transform: 'translateZ(.004em) rotateX(352deg)' }], {
+        duration: FLIP,
+        easing: 'cubic-bezier(.5,.05,.2,1)',
+        fill: 'forwards',
+      }).onfinish = () => {
+        i = next;
+        paint(face, i);
+        leaf.getAnimations({ subtree: true }).forEach((a) => a.cancel());
+        q('.cal__shade', under).getAnimations().forEach((a) => a.cancel());
+        paint(under, (i + 1) % n);
+        setTimeout(flip, HOLD);
+      };
+    };
+
+    // Start flipping once the intro has played.
+    const root = document.documentElement;
+    const start = () => n > 1 && setTimeout(flip, 1300);
+    if (root.classList.contains('is-ready')) start();
+    else {
+      const mo = new MutationObserver(() => {
+        if (!root.classList.contains('is-ready')) return;
+        mo.disconnect();
+        start();
+      });
+      mo.observe(root, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
+  // The portrait is grayscale; the pointer paints its colour back in with a soft brush whose
+  // trail fades out again once the pointer rests. Touch screens keep the grayscale portrait.
+  const paintStage = document.querySelector<HTMLElement>('[data-paint-stage]');
+  const paint = paintStage?.querySelector<HTMLCanvasElement>('[data-paint]');
+  if (paintStage && paint) {
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!fine || matchMedia('(prefers-reduced-motion: reduce)').matches) paint.remove();
+    else {
+      const img = paintStage.querySelector('img')!;
+      const ctx = paint.getContext('2d')!;
+      const colour = document.createElement('canvas');
+      const cX = colour.getContext('2d')!;
+      const mask = document.createElement('canvas');
+      const mX = mask.getContext('2d')!;
+      const src = new Image();
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const radius = 130 * dpr;
+      const decay = 0.016;
+      const points: { x: number; y: number }[] = [];
+      let last: { x: number; y: number } | null = null;
+      let W = 1;
+      let H = 1;
+      let idle = 0;
+      let running = false;
+
+      // Same crop as the <img>: object-fit: cover at its object-position.
+      const fit = () => {
+        cX.clearRect(0, 0, W, H);
+        if (!src.naturalWidth) return;
+        const s = Math.max(W / src.naturalWidth, H / src.naturalHeight);
+        const dw = src.naturalWidth * s;
+        const dh = src.naturalHeight * s;
+        const [px, py] = getComputedStyle(img).objectPosition.split(' ').map((v) => parseFloat(v) / 100);
+        cX.drawImage(src, (W - dw) * px, (H - dh) * py, dw, dh);
+      };
+      const measure = () => {
+        W = Math.max(1, Math.round(paintStage.offsetWidth * dpr));
+        H = Math.max(1, Math.round(paintStage.offsetHeight * dpr));
+        for (const c of [paint, colour, mask]) {
+          c.width = W;
+          c.height = H;
+        }
+        fit();
+      };
+      const stamp = (x: number, y: number) => {
+        const g = mX.createRadialGradient(x, y, 0, x, y, radius);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(0.55, 'rgba(255,255,255,.82)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        mX.globalCompositeOperation = 'source-over';
+        mX.fillStyle = g;
+        mX.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      };
+      const frame = () => {
+        const drawing = points.length > 0;
+        idle = drawing ? 0 : idle + 1;
+        if (idle >= 120) {
+          ctx.clearRect(0, 0, W, H);
+          mX.clearRect(0, 0, W, H);
+          running = false;
+          return;
+        }
+        // The trail fades slowly while the pointer moves and quickly once it rests.
+        mX.globalCompositeOperation = 'destination-out';
+        mX.fillStyle = `rgba(0,0,0,${drawing ? decay : Math.min(decay + idle * 0.004, 0.5)})`;
+        mX.fillRect(0, 0, W, H);
+        points.splice(0).forEach((p) => stamp(p.x, p.y));
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, W, H);
+        ctx.drawImage(colour, 0, 0);
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(mask, 0, 0);
+        requestAnimationFrame(frame);
+      };
+
+      addEventListener(
+        'pointermove',
+        (e) => {
+          if (!src.naturalWidth) return;
+          const r = paintStage.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width) * W;
+          const y = ((e.clientY - r.top) / r.height) * H;
+          if (x < -radius || y < -radius || x > W + radius || y > H + radius) {
+            last = null;
+            return;
+          }
+          // Fill in the stretch since the last event so fast strokes stay continuous.
+          if (last) {
+            const dx = x - last.x;
+            const dy = y - last.y;
+            const n = Math.min(Math.ceil(Math.hypot(dx, dy) / (radius * 0.3)), 60);
+            for (let k = 1; k <= n; k++) points.push({ x: last.x + (dx * k) / n, y: last.y + (dy * k) / n });
+          } else points.push({ x, y });
+          last = { x, y };
+          if (!running) {
+            running = true;
+            idle = 0;
+            requestAnimationFrame(frame);
+          }
+        },
+        { passive: true },
+      );
+
+      const load = () => {
+        src.onload = fit;
+        src.src = img.currentSrc || img.src;
+      };
+      if (img.complete) load();
+      else img.addEventListener('load', load, { once: true });
+      new ResizeObserver(measure).observe(paintStage);
+    }
+  }
+</script>
