@@ -13,8 +13,8 @@ This repo has been through **three designs on three different stacks**. Only one
 | **Design** | Design 3 — *Wall of Doors* (warm plaster & brass) |
 | **Stack** | Astro 7.4 · TypeScript (strict) · scoped CSS · vanilla JS (no UI framework) |
 | **Branch** | `main` (merged from `astro-stack-new-desgin` in PR #5) |
-| **Status** | On `main`, deployed to GitHub Pages by [`.github/workflows/astro.yml`](.github/workflows/astro.yml) |
-| **Live** | https://naveen-929.github.io/naveen/ |
+| **Status** | On `main`, deployed by Cloudflare Pages |
+| **Live** | https://naveencenrayan.pages.dev/ |
 | **Since** | October 2026 |
 
 ## Design history
@@ -39,7 +39,7 @@ The snapshot commit is the **last commit of that design**. Check it out to get t
 - **Look:** neo-brutalism: thick black borders, flat offset shadows, a yellow / cyan / pink / green palette, torn-paper section dividers, scroll-drawn highlights, a falling terminal icon, a matrix-typing greeting and a Leaflet journey map.
 - **Stack:** vanilla HTML, CSS and JS with no build step; Leaflet 1.9.4; Font Awesome 6.4; Google Fonts (Space Grotesk, Space Mono, Caveat); JSON-LD and Open Graph meta for SEO.
 - **Key files:** `index.html` (markup and inline JS), `neo-styles.css`, `image/`, `favicon.ico`, `robots.txt`. `neo-script.js`, `script.js` and `styles.css` (a terminal-style resume) are in the snapshot but not loaded by `index.html`.
-- **Hosted** on GitHub Pages at https://naveen-929.github.io/naveen/, deployed straight from `main`. Its meta tags point to https://naveencenrayan.pages.dev/.
+- **Hosted** on Cloudflare Pages at https://naveencenrayan.pages.dev/ (and on GitHub Pages at https://naveen-929.github.io/naveen/), deployed straight from `main` with no build step.
 - Adapted from the open-source neo-brutalist portfolio at marjoballabani.me.
 
 ### Design 3 — Wall of Doors (current)
@@ -61,10 +61,14 @@ npm run preview   # serve the built dist/
 
 ### Deploying
 
-Every push to `main` runs [`.github/workflows/astro.yml`](.github/workflows/astro.yml), which builds the site with `--base /naveen` and publishes `dist/` to GitHub Pages.
+**Cloudflare Pages** builds the repo on every push: build command `npm run build`, output directory `dist`.
+
+- Node is pinned in [`.node-version`](.node-version). Without it Cloudflare falls back to Node 18, and Astro 7 refuses to build on anything below 22.23.4. If you bump Node, update this file and `engines` in `package.json` together.
+
+**GitHub Pages** (optional): [`.github/workflows/astro.yml`](.github/workflows/astro.yml) builds with `--base /naveen` and publishes to https://naveen-929.github.io/naveen/.
 
 - In **Settings → Pages**, **Source** must be **GitHub Actions**. With "Deploy from a branch", GitHub runs Jekyll over the raw `.astro` files and the build fails.
-- The site lives under `/naveen/`, so internal links must go through `withBase()` from [`src/lib/paths.ts`](src/lib/paths.ts), e.g. `href={withBase('/#story')}`. A bare `href="/..."` works in `npm run dev` but 404s once deployed.
+- Because that copy lives under `/naveen/`, internal links go through `withBase()` from [`src/lib/paths.ts`](src/lib/paths.ts), e.g. `href={withBase('/#story')}`. On Cloudflare (served at `/`) it changes nothing; a bare `href="/..."` would only break the GitHub Pages copy.
 
 ```
 .
