@@ -1,5 +1,6 @@
 ---
 import { profile, doors } from '../data/profile';
+import { withBase } from '../lib/paths';
 
 const year = new Date().getFullYear();
 ---
@@ -26,14 +27,14 @@ const year = new Date().getFullYear();
     <div class="sf__cols">
       <div>
         <p class="mono sf__h">Work</p>
-        <ul>{doors.map((d) => <li><a href={`/work/${d.slug}/`}>{d.title}</a></li>)}</ul>
+        <ul>{doors.map((d) => <li><a href={withBase(`/work/${d.slug}/`)}>{d.title}</a></li>)}</ul>
       </div>
       <div>
         <p class="mono sf__h">Navigate</p>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/#story">My journey</a></li>
-          <li><a href="/#contact">Contact</a></li>
+          <li><a href={withBase('/')}>Home</a></li>
+          <li><a href={withBase('/#story')}>My journey</a></li>
+          <li><a href={withBase('/#contact')}>Contact</a></li>
         </ul>
       </div>
       <div>

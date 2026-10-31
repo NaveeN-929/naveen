@@ -1,5 +1,6 @@
 ---
 import { doors } from '../data/profile';
+import { withBase } from '../lib/paths';
 ---
 
 <section class="doors" id="work" aria-labelledby="doors-title" data-doors>
@@ -33,7 +34,7 @@ import { doors } from '../data/profile';
       {
         doors.map((d, i) => (
           <li class="unit" style={`--i:${i}`}>
-            <a class="door" href={`/work/${d.slug}/`} data-door={i} style={`--door:${d.color}`}>
+            <a class="door" href={withBase(`/work/${d.slug}/`)} data-door={i} style={`--door:${d.color}`}>
               <span class="door__casing" />
               <span class="door__opening" data-opening>
                 <span class="door__room" />

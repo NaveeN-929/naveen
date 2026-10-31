@@ -1,11 +1,12 @@
 ---
 import { profile, doors } from '../data/profile';
+import { withBase } from '../lib/paths';
 
 const items = [
-  { href: '/', label: 'Home' },
-  ...doors.map((d) => ({ href: `/work/${d.slug}/`, label: d.title })),
-  { href: '/#story', label: 'My journey' },
-  { href: '/#contact', label: 'Contact' },
+  { href: withBase('/'), label: 'Home' },
+  ...doors.map((d) => ({ href: withBase(`/work/${d.slug}/`), label: d.title })),
+  { href: withBase('/#story'), label: 'My journey' },
+  { href: withBase('/#contact'), label: 'Contact' },
 ];
 ---
 
